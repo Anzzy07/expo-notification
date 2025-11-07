@@ -1,3 +1,4 @@
+import { useNotifications } from "@/hooks/useNotification";
 import {
   DarkTheme,
   DefaultTheme,
@@ -15,6 +16,8 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  useNotifications();
+
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <SafeAreaView style={{ flex: 1 }}>

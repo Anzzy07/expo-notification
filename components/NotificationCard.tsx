@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,39 +7,100 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
-type Props = {
+type NotificationCard = {
   message: string;
+  fromUser: string;
 };
 
-export const NotificationCard: React.FC<Props> = ({ message }) => {
-  const [reply, setReply] = useState("");
+export const NotificationCard: React.FC<NotificationCard> = ({
+  message,
+  fromUser,
+}) => {
+  const router = useRouter();
+  const [showReplyInput, setShowReplyInput] = useState(false);
+  const [replyText, setReplyText] = useState("");
+  const [sentMessage, setSentMessage] = useState<string | null>(null);
+
+  const translateY = useSharedValue(-150);
+
+  useEffect(() => {
+    translateY.value = withTiming(0, {
+      duration: 600,
+      easing: Easing.out(Easing.exp),
+    });
+  }, []);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value }],
+  }));
 
   const handleSend = () => {
-    if (!reply.trim()) return;
-    console.log("User replied:", reply);
-    setReply("");
-    alert(`Reply sent: ${reply}`);
+    if (!replyText.trim()) return;
+    setSentMessage(replyText);
+    setReplyText("");
+    setShowReplyInput(false);
+    alert(`Sent reply: "${replyText}" to ${fromUser}`);
+  };
+
+  const handleOpenChat = () => {
+    router.push({
+      pathname: "/(tabs)/chats",
+      params: { message, fromUser },
+    });
+  };
+
+  const handleClose = () => {
+    translateY.value = withTiming(-200, { duration: 400 });
   };
 
   return (
-    <View style={styles.card}>
-      <Text style={styles.title}>New Message 💬</Text>
-      <Text style={styles.message}>{message}</Text>
+    <Animated.View style={[styles.card, animatedStyle]}>
+      <TouchableOpacity activeOpacity={0.8} onPress={handleOpenChat}>
+        <Text style={styles.title}>{fromUser}</Text>
+        <Text style={styles.message}>{message}</Text>
+      </TouchableOpacity>
 
-      <View style={styles.replyContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Your reply..."
-          placeholderTextColor="#aaa"
-          value={reply}
-          onChangeText={setReply}
-        />
-        <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
-          <Text style={styles.sendText}>Send</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+      {sentMessage && (
+        <Text style={styles.replyText}>You replied: {sentMessage}</Text>
+      )}
+
+      {showReplyInput ? (
+        <View style={styles.replyContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Type your reply..."
+            placeholderTextColor="#aaa"
+            value={replyText}
+            onChangeText={setReplyText}
+            onSubmitEditing={handleSend}
+          />
+          <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
+            <Text style={styles.sendText}>Send</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <View style={styles.actions}>
+          <TouchableOpacity onPress={() => alert("Liked 👍")}>
+            <Text style={styles.actionText}>Like</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => setShowReplyInput(true)}>
+            <Text style={styles.actionText}>Reply</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={handleClose}>
+            <Text style={[styles.actionText, { color: "#d33" }]}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+    </Animated.View>
   );
 };
 
@@ -47,7 +109,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#1f1f1f",
     borderRadius: 16,
     padding: 16,
-    margin: 20,
+    marginHorizontal: 20,
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    position: "absolute",
+    top: 40,
+    width: "90%",
+    alignSelf: "center",
   },
   title: {
     color: "#00d46a",
@@ -81,5 +150,19 @@ const styles = StyleSheet.create({
   sendText: {
     color: "#000",
     fontWeight: "600",
+  },
+  actions: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginTop: 10,
+  },
+  actionText: {
+    color: "#00d46a",
+    fontWeight: "500",
+  },
+  replyText: {
+    color: "#ccc",
+    fontStyle: "italic",
+    marginBottom: 8,
   },
 });

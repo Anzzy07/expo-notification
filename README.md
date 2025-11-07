@@ -1,4 +1,4 @@
-# Welcome to your Expo app 👋
+# WhatsApp Notification App with Expo
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
@@ -16,6 +16,10 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    npx expo start
    ```
 
+3. Start the app
+
+   Scan the following QR generated in terminal
+
 In the output, you'll find options to open the app in a
 
 - [development build](https://docs.expo.dev/develop/development-builds/introduction/)
@@ -25,15 +29,29 @@ In the output, you'll find options to open the app in a
 
 You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
-## Get a fresh project
+Note on Notifications: The app works great in Expo Go for basic testing (triggering and viewing notifications). However, for a smoother, more advanced experience—like full custom actions and better handling of notification categories—a development build is necessary. If you're sticking with Expo Go, just enable notifications in your device settings, and it'll still feel good to use.
 
-When you're ready, run:
+## Quick Demo
 
-```bash
-npm run reset-project
-```
+- Home Tab: Tap "Trigger Notification" to send a sample message. A sliding card appears with the message from "Anzel."
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+- Interactions: Like (👍 alert), Reply (type and send with input field), or Close the notification.
+
+- Chats Tab: Tap the notification to jump into a bubble-style chat. Send your own messages—they're stored locally with zustand.
+
+## Tech Stack
+
+Framework: React Native + Expo
+
+File Navigation: Expo Router.
+
+Global State: Zustand
+
+Notifications: Expo Notifications.
+
+UI/Animations: React Native Reanimated, Material Icons.
+
+Theme: React Navigation Dark/Default themes.
 
 ## Learn more
 
@@ -41,10 +59,3 @@ To learn more about developing your project with Expo, look at the following res
 
 - [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
 - [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.

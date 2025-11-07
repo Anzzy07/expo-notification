@@ -21,9 +21,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="updates"
+        name="chats"
         options={{
-          title: "Updates",
+          title: "Chats",
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="update" size={size} color={color} />
           ),
